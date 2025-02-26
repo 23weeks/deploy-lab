@@ -16,15 +16,21 @@ jobs:
       - name: Set up SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/id_rsa
+          printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/id_rsa
           chmod 400 ~/.ssh/id_rsa
-          ssh-keyscan 13.124.222.6 >> ~/.ssh/known_hosts
+          ssh-keyscan 13.124.222.6 > ~/.ssh/known_hosts
+
+      - name: Debug SSH Key
+        run: |
+          echo "Checking SSH key..."
+          ls -la ~/.ssh
+          head -n 5 ~/.ssh/id_rsa || echo "Failed to read SSH key"
 
       - name: Test SSH Connection
         run: ssh -i ~/.ssh/id_rsa ubuntu@13.124.222.6 "echo 'SSH Connection Successful'"
 
       - name: Deploy with SCP
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@v0.1.5
         with:
           host: "13.124.222.6"
           username: "ubuntu"
