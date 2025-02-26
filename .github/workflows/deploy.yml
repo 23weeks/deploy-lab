@@ -23,6 +23,9 @@ jobs:
         run: mvn clean package -DskipTests
         working-directory: demoproject
 
+      - name: Debug SSH Connection
+        run: ssh -v -i ~/.ssh/demo-key.pem asher@{{ secrets.EC2_HOST }} "echo 'SSH 연결 성공!'"
+
       - name: Copy JAR to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
