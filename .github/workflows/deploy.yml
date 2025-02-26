@@ -19,34 +19,30 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      # 🔹 프로젝트 빌드 (경로 확인 필수)
       - name: Build Project
         run: mvn clean package -DskipTests
-        working-directory: demoproject
+        working-directory: demoproject  # 필요하면 제거
 
-      # 🔹 SSH Key 설정
-      - name: Create SSH Key File
+      # 🔹 SSH Key 설정 및 EC2 호스트 등록
+      - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/demo-key.pem
           chmod 600 ~/.ssh/demo-key.pem
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      # 🔹 SSH Debug (파일 존재 여부 확인)
-      - name: Debug SSH Key
-        run: |
-          ls -lah ~/.ssh
-          ssh-keygen -lf ~/.ssh/demo-key.pem
-
-      # 🔹 EC2로 파일 전송 (SCP)
+      # 🔹 빌드된 JAR 파일 전송
       - name: Copy to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
-          source: "demoproject/target/*.jar"
+          source: "demoproject/target/*.jar"  # 필요하면 "target/*.jar"로 변경
           target: "/home/${{ secrets.EC2_USERNAME }}/app"
 
-      # 🔹 EC2에서 배포 스크립트 실행
+      # 🔹 EC2에서 애플리케이션 실행
       - name: Restart Application
         uses: appleboy/ssh-action@v0.1.4
         with:
@@ -54,9 +50,9 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            pkill -f "java -jar" || true
+            PID=$(pgrep -f 'app/*.jar') && kill $PID || true
             nohup java -jar ~/app/*.jar > ~/app/log.txt 2>&1 &
 
-      # 🔹 SSH Debug 확인
+      # 🔹 SSH Debug (옵션)
       - name: Debug SSH Connection
         run: ssh -v -i ~/.ssh/demo-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "echo 'SSH 연결 성공!'"
