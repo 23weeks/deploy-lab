@@ -12,30 +12,17 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.4
         with:
-          host: 13.124.222.6
-          username: ubuntu
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: "13.124.222.6"
+          username: "ubuntu"
+          key: "${{ secrets.SSH_PRIVATE_KEY }}"
           port: 22
           script: |
-            echo "Starting deployment..."
-            cd /home/ubuntu/app
-
-            echo "📂 Removing old files..."
-            rm -rf *
-
-            echo "📦 Copying new files..."
-            scp -r $GITHUB_WORKSPACE/* ubuntu@13.124.222.6:/home/ubuntu/app
-
-            echo "🔨 Building project..."
-            ./mvnw clean package -DskipTests
-
-            echo "🛑 Stopping old process..."
-            sudo systemctl stop myapp || echo "No existing service to stop"
-
-            echo "🚀 Starting new process..."
-            sudo systemctl start myapp
-
-            echo "✅ Deployment successful!"
-      
-        
+            whoami
+            cd ~/app/demoproject
+            git pull origin main
+            mvn clean package -DskipTests
+            sudo systemctl restart myapp
