@@ -20,6 +20,9 @@ jobs:
           chmod 400 ~/.ssh/id_rsa
           ssh-keyscan 13.124.222.6 >> ~/.ssh/known_hosts
 
+      - name: Test SSH Connection
+        run: ssh -i ~/.ssh/id_rsa ubuntu@13.124.222.6 "echo 'SSH Connection Successful'"
+
       - name: Deploy with SCP
         uses: appleboy/scp-action@v0.1.4
         with:
