@@ -31,7 +31,7 @@ jobs:
           username: ahser
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           source: "demoproject/target/*.jar"
-          target: "~/app"
+          target: "/home/asher/app"
 
       - name: Restart Application
         uses: appleboy/ssh-action@v0.1.4
