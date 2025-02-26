@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main  # 또는 배포할 브랜치
+      - main
 
 jobs:
   deploy:
@@ -13,26 +13,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Decode SSH Private Key
+        run: |
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" | base64 --decode > private_key.pem
+          chmod 600 private_key.pem
+
       - name: Deploy with SCP
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: "ubuntu"  # Ubuntu의 경우 "ubuntu"로 변경
+          username: ubuntu
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           port: 22
-          source: "demoproject/*"  # `demoproject` 폴더의 모든 파일 배포
-          target: "/home/ubuntu/app"  # EC2의 배포 경로 (필요에 따라 변경)
-          overwrite: true  # 기존 파일 덮어쓰기
-          debug: true  # 디버깅 로그 활성화
-
-      - name: Restart Application
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: "ubuntu"
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          port: 22
-          script: |
-            cd /home/ubuntu/app
-            # chmod +x start.sh  # 실행 권한 부여 (필요 시)
-            # ./start.sh  # 배포 후 실행할 스크립트 (필요에 따라 변경)
+          source: "demoproject/*"
+          target: "/home/ubuntu/app"
+          overwrite: true
+          debug: true
