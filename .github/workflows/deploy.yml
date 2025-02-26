@@ -19,30 +19,47 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # 🔹 프로젝트 빌드 (경로 확인 필수)
       - name: Build Project
         run: mvn clean package -DskipTests
-        working-directory: demoproject  # 필요하면 제거
+        working-directory: demoproject
 
-      # 🔹 SSH Key 설정 및 EC2 호스트 등록
-      - name: Set up SSH
+      # 🔹 SSH Key 설정 (Base64 디코딩 방식 사용)
+      - name: Create SSH Key File
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/demo-key.pem
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/demo-key.pem
           chmod 600 ~/.ssh/demo-key.pem
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-      # 🔹 빌드된 JAR 파일 전송
+      # 🔹 SSH Key 디버깅 (키 파일 존재 여부 및 내용 확인)
+      - name: Debug SSH Key
+        run: |
+          echo "🔹 ~/.ssh 디렉토리 확인:"
+          ls -lah ~/.ssh
+          
+          echo "🔹 SSH Key 파일 내용 (앞부분 5줄) 확인:"
+          head -n 5 ~/.ssh/demo-key.pem
+
+      # 🔹 SSH Agent에 키 추가 (ssh-agent 사용)
+      - name: Add SSH Key to ssh-agent
+        run: |
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/demo-key.pem
+
+      # 🔹 SSH 디버깅 (GitHub Actions에서 EC2 연결 테스트)
+      - name: Debug SSH Connection
+        run: ssh -vvv -i ~/.ssh/demo-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "echo '✅ SSH 연결 성공!'"
+
+      # 🔹 EC2로 파일 전송 (SCP)
       - name: Copy to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
-          source: "demoproject/target/*.jar"  # 필요하면 "target/*.jar"로 변경
+          source: "demoproject/target/*.jar"
           target: "/home/${{ secrets.EC2_USERNAME }}/app"
 
-      # 🔹 EC2에서 애플리케이션 실행
+      # 🔹 EC2에서 배포 스크립트 실행
       - name: Restart Application
         uses: appleboy/ssh-action@v0.1.4
         with:
@@ -53,15 +70,6 @@ jobs:
             PID=$(pgrep -f 'app/*.jar') && kill $PID || true
             nohup java -jar ~/app/*.jar > ~/app/log.txt 2>&1 &
 
-      # 🔹 SSH Debug (옵션)
-      - name: Debug SSH Connection
-        run: ssh -vvv -i ~/.ssh/demo-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "echo 'SSH 연결 성공!'"
-
-      - name: Debug SSH Key
-        run: |
-          echo "🔹 ~/.ssh 디렉토리 확인:"
-          ls -lah ~/.ssh
-      
-          echo "🔹 SSH Key 파일 내용 확인:"
-          cat ~/.ssh/demo-key.pem | head -n 5  # 키가 정상적으로 생성되었는지 확인
-
+      # 🔹 SSH 디버깅 (배포 후 정상 동작 확인)
+      - name: Verify Deployment
+        run: ssh -i ~/.ssh/demo-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "ps aux | grep java"
