@@ -30,6 +30,12 @@ jobs:
           echo "${{ secrets.EC2_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/demo-key.pem
           chmod 600 ~/.ssh/demo-key.pem
 
+      #🔹 known_hosts 추가
+      - name: Add Known Hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+    
       # 🔹 SSH Key 디버깅 (키 파일 존재 여부 및 내용 확인)
       - name: Debug SSH Key
         run: |
