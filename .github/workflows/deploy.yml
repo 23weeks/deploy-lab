@@ -23,34 +23,40 @@ jobs:
         run: mvn clean package -DskipTests
         working-directory: demoproject
 
-      # 🔹 GitHub Actions에 SSH Key 설정
+      # 🔹 SSH Key 설정
       - name: Create SSH Key File
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/demo-key.pem
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/demo-key.pem
           chmod 600 ~/.ssh/demo-key.pem
+
+      # 🔹 SSH Debug (파일 존재 여부 확인)
+      - name: Debug SSH Key
+        run: |
+          ls -lah ~/.ssh
+          ssh-keygen -lf ~/.ssh/demo-key.pem
 
       # 🔹 EC2로 파일 전송 (SCP)
       - name: Copy to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: asher
+          username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           source: "demoproject/target/*.jar"
-          target: "/home/asher/app"
+          target: "/home/${{ secrets.EC2_USERNAME }}/app"
 
       # 🔹 EC2에서 배포 스크립트 실행
       - name: Restart Application
         uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: asher
+          username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
             pkill -f "java -jar" || true
             nohup java -jar ~/app/*.jar > ~/app/log.txt 2>&1 &
 
-      # 🔹 SSH Debug 확인 (문제 발생 시 실행)
+      # 🔹 SSH Debug 확인
       - name: Debug SSH Connection
-        run: ssh -v -i ~/.ssh/demo-key.pem asher@${{ secrets.EC2_HOST }} "echo 'SSH 연결 성공!'"
+        run: ssh -v -i ~/.ssh/demo-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "echo 'SSH 연결 성공!'"
