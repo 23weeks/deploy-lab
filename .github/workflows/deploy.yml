@@ -13,27 +13,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan 13.124.222.6 > ~/.ssh/known_hosts
-
-      - name: Debug SSH Key
-        run: |
-          echo "🔍 Checking SSH key..."
-          ls -la ~/.ssh
-          cat ~/.ssh/id_rsa | head -n 5 || echo "❌ SSH key not found!"
-
-      - name: Test SSH Connection
-        run: ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@13.124.222.6 "echo '✅ SSH Connection Successful'"
-
       - name: Deploy with SCP
-        uses: appleboy/scp-action@v0.1.5
-        with:
-          host: "13.124.222.6"
-          username: "ubuntu"
-          key: "${{ secrets.SSH_PRIVATE_KEY }}"
-          source: "demoproject/*"
-          target: "/home/ubuntu/app"
+        run: |
+          scp -o StrictHostKeyChecking=no -i <(echo "${{ secrets.SSH_PRIVATE_KEY }}") -r demoproject/* ubuntu@13.124.222.6:/home/ubuntu/app
