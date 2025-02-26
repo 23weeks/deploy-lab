@@ -22,22 +22,21 @@ jobs:
       - name: Build Project
         run: mvn clean package -DskipTests
         working-directory: demoproject
-            
 
-      - name: Copy to EC2
+      - name: Copy JAR to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ahser
+          username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           source: "demoproject/target/*.jar"
           target: "/home/asher/app"
 
-      - name: Restart Application
+      - name: Restart Application on EC2
         uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: asher
+          username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
             pkill -f "java -jar" || true
