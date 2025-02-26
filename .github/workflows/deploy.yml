@@ -55,4 +55,13 @@ jobs:
 
       # 🔹 SSH Debug (옵션)
       - name: Debug SSH Connection
-        run: ssh -v -i ~/.ssh/demo-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "echo 'SSH 연결 성공!'"
+        run: ssh -vvv -i ~/.ssh/demo-key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "echo 'SSH 연결 성공!'"
+
+      - name: Debug SSH Key
+        run: |
+          echo "🔹 ~/.ssh 디렉토리 확인:"
+          ls -lah ~/.ssh
+      
+          echo "🔹 SSH Key 파일 내용 확인:"
+          cat ~/.ssh/demo-key.pem | head -n 5  # 키가 정상적으로 생성되었는지 확인
+
