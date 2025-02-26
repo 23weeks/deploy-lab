@@ -12,7 +12,12 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-
-      - name: Deploy with SCP
-        run: |
-          scp -o StrictHostKeyChecking=no -i <(echo "${{ secrets.SSH_PRIVATE_KEY }}") -r demoproject/* ubuntu@13.124.222.6:/home/ubuntu/app
+        with:
+          host: 13.124.222.6
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            whoami
+      
+        
