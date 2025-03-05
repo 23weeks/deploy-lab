@@ -4,9 +4,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>JSP 설정 완료</title>
+<title>INDEX PAGE</title>
 </head>
 <body>
-	<h2>JSP 설정 완료</h2>
+	<h2>INDEX PAGE</h2>
+	<div>
+		<a></a>
+	</div>
 </body>
 </html>
