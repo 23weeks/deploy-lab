@@ -1,4 +1,4 @@
-package asher.demo.service;
+package asher.demo.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import asher.demo.model.StockData;
 import asher.demo.repository.StockDataRepository;
+import asher.demo.service.StockDataService;
 
 @Service
 public class StockDataServiceImpl implements StockDataService {
