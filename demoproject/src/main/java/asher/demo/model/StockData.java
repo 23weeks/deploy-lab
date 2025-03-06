@@ -3,7 +3,7 @@ package asher.demo.model;
 public class StockData {
 	
 	//Time Series Data
-	private String stock_time;		//시간
+	private String stockTime;		//시간
 	private String symbol;			//종목
 	private String open;			//시가
 	private String high;			//고가
@@ -13,7 +13,7 @@ public class StockData {
 	
 	//생성자
 	public StockData(String stock_time, String symbol, String open, String high, String low, String close, String volume) {
-		this.stock_time = stock_time;
+		this.stockTime = stock_time;
 		this.symbol = symbol;
 		this.open = open;
 		this.high = high;
@@ -23,10 +23,10 @@ public class StockData {
 	}
 	
 	public String getStock_time() {
-		return stock_time;
+		return stockTime;
 	}
 	public void setStock_time(String stock_time) {
-		this.stock_time = stock_time;
+		this.stockTime = stock_time;
 	}
 	public String getSymbol() {
 		return symbol;

@@ -64,6 +64,25 @@
 	        <scope>provided</scope>
 	    </dependency>
 	    
+	    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-annotations</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
+		<dependency>
+		    <groupId>org.mybatis.spring.boot</groupId>
+		    <artifactId>mybatis-spring-boot-starter</artifactId>
+		    <version>2.2.2</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

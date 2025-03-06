@@ -3,13 +3,15 @@ package asher.demo.service.impl;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import asher.demo.model.MetaData;
 import asher.demo.model.StockData;
-import asher.demo.repository.StockDataRepository;
 import asher.demo.service.StockDataService;
 
 @Service
@@ -20,34 +22,48 @@ public class StockDataServiceImpl implements StockDataService {
 	@Value("${stock.api.key}")
 	private String apiKey;
 	
-	private final StockDataRepository stockDataRepository;
-	
-	@Autowired
-	public StockDataServiceImpl(StockDataRepository stockDataRepository) {
-		this.stockDataRepository = stockDataRepository;
-	}
-	
 	public void fetchAndSaveStockData() {
 		
 		//현재 시간
 		LocalDateTime now = LocalDateTime.now();
 		String formattedTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:SS"));
 		
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-		System.out.println("API CALL TIME : " + formattedTime);
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		System.out.println("API REQUEST TIME : " + formattedTime);
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		
 		String url = API_URL + apiKey;
 		
-		RestTemplate restTemplate = new RestTemplate();
-		Object response = restTemplate.getForObject(url, Object.class);
-		
-		System.out.println(response);
-		
-		//객체 생성
-		StockData stockData = new StockData("AAPL", "Apple", "150.25", "1000", "", "", "");
-		
-		//DB에 저장
-		//stockDataRepository.save(stockData);
+		try {
+			RestTemplate restTemplate = new RestTemplate();
+			String response = restTemplate.getForObject(url, String.class);
+			
+			//ObjectMapper 생성
+			ObjectMapper objectMapper = new ObjectMapper();
+			
+			//JSON 문자열을 JsonNode 객체로 변환
+			JsonNode jsonNode = objectMapper.readTree(response);
+			
+			//임시
+			String data = jsonNode.toString();
+			System.out.println(data);
+			
+			//객체 생성
+			JsonNode meta_data = jsonNode.get("Meta Data");
+			String information = meta_data.get("Information").asText();
+			String symbol = meta_data.get("Symbol").asText();
+			String lastRefreshed = meta_data.get("Last Refreshed").asText();
+			String interval = meta_data.get("Interval").asText();
+			String outputSize = meta_data.get("Output Size").asText();
+			String timeZone = meta_data.get("Time Zone").asText();
+			
+			MetaData metaData = new MetaData(information, symbol, lastRefreshed, interval, outputSize, timeZone);
+			//StockData stockData = new StockData();
+			
+			//DB에 저장
+			//stockDataRepository.save(stockData);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
