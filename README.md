@@ -9,3 +9,6 @@
 
 ### 프레임워크
     Spring-Boot
+
+### 데이터베이스
+    Oracle
