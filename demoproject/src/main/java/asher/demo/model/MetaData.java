@@ -6,7 +6,7 @@ public class MetaData {
 	private String information;		//정보
 	private String symbol;			//종목
 	private String lastRefreshed;	//최종수정시간
-	private String interval;		//간격
+	private String timeFrame;		//간격
 	private String outputSize;		//출력크기
 	private String timeZone;		//시간대
 	
@@ -15,7 +15,7 @@ public class MetaData {
 		this.information = information;
 		this.symbol = symbol;
 		this.lastRefreshed = last_refreshed;
-		this.interval = interval;
+		this.timeFrame = interval;
 		this.outputSize = output_size;
 		this.timeZone = time_zone;
 	}
@@ -39,10 +39,10 @@ public class MetaData {
 		this.lastRefreshed = last_refreshed;
 	}
 	public String getInterval() {
-		return interval;
+		return timeFrame;
 	}
 	public void setInterval(String interval) {
-		this.interval = interval;
+		this.timeFrame = interval;
 	}
 	public String getOutput_size() {
 		return outputSize;

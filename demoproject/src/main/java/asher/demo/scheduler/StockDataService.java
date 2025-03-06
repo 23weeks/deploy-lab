@@ -56,6 +56,7 @@ public class StockDataService {
 		String url = API_URL + apiKey;
 		
 		try {
+			/*
 			RestTemplate restTemplate = new RestTemplate();
 			String response = restTemplate.getForObject(url, String.class);
 			
@@ -68,33 +69,32 @@ public class StockDataService {
 			//임시
 			String data = jsonNode.toString();
 			System.out.println(data);
+			*/
 			
+			/*
 			//객체 생성
 			JsonNode meta_data = jsonNode.get("Meta Data");
 			String information 		= meta_data.get("1. Information").asText();
 			String symbol 			= meta_data.get("2. Symbol").asText();
 			String lastRefreshed 	= meta_data.get("3. Last Refreshed").asText();
-			String interval 		= meta_data.get("4. Interval").asText();
+			String timeFrame 		= meta_data.get("4. Interval").asText();
 			String outputSize 		= meta_data.get("5. Output Size").asText();
 			String timeZone 		= meta_data.get("6. Time Zone").asText();
 			
-			MetaData metaData = new MetaData(information, symbol, lastRefreshed, interval, outputSize, timeZone);
+			MetaData metaData = new MetaData(information, symbol, lastRefreshed, timeFrame, outputSize, timeZone);
+			*/
 			
 			/*
 			System.out.println("information : " + information);
 			System.out.println("symbol : " + symbol);
 			System.out.println("lastRefreshed : " + lastRefreshed);
-			System.out.println("interval : " + interval);
+			System.out.println("timeFrame : " + timeFrame);
 			System.out.println("outputSize : " + outputSize);
 			System.out.println("timeZone : " + timeZone);
 			*/
 			
 			//DB에 저장
 			//stockDataMapper.insertMetaData(metaData);
-			
-			//TEST
-			stockDataMapper.selectTest();
-			
 			
 		} catch (Exception e) {
 			e.printStackTrace();

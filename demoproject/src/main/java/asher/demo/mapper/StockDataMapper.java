@@ -1,15 +1,12 @@
 package asher.demo.mapper;
 
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
 
 import asher.demo.model.MetaData;
 
-@Repository
+@Mapper
 public interface StockDataMapper {
 	
 	/* INSERT Alpha Vantage API - Meta Data */
 	void insertMetaData(MetaData metaData);
-	
-	/* TEST */
-	MetaData selectTest();
 }
