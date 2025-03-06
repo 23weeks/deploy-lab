@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ahser.demo.mapper.StockDataMapper">
+	
+	<insert id="insertMetaData" parameterType="MetaData">
+		INSERT INTO META_DATA_TB (
+									SYMBOL
+								  , INFORMATION
+								  , LAST_REFRESHED
+								  , TIME_FRAME
+								  , OUTPUT_SIZE
+								  , TIME_ZONE
+								  , REG_DATE
+								) VALUES (
+									#{symbol}
+								  , #{information}
+								  , #{lastRefreshed}
+								  , #{interval}
+								  , #{outputSize}
+								  , #{timeZone}
+								  , SYSDATE
+								)
+	</insert>
+	
+	<select id="selectTest" parameterType="string" resultType="MetaData">
+		SELECT * FROM META_DATA_TB
+	</select>
+</mapper>
