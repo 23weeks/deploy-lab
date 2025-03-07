@@ -12,8 +12,8 @@ public class StockData {
 	private String volume;			//거래량
 	
 	//생성자
-	public StockData(String stock_time, String symbol, String open, String high, String low, String close, String volume) {
-		this.stockTime = stock_time;
+	public StockData(String stockTime, String symbol, String open, String high, String low, String close, String volume) {
+		this.stockTime = stockTime;
 		this.symbol = symbol;
 		this.open = open;
 		this.high = high;
@@ -22,11 +22,11 @@ public class StockData {
 		this.volume = volume;
 	}
 	
-	public String getStock_time() {
+	public String getStockTime() {
 		return stockTime;
 	}
-	public void setStock_time(String stock_time) {
-		this.stockTime = stock_time;
+	public void setStockTime(String stockTime) {
+		this.stockTime = stockTime;
 	}
 	public String getSymbol() {
 		return symbol;

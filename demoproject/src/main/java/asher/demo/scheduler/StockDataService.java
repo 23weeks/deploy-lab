@@ -2,11 +2,12 @@ package asher.demo.scheduler;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,18 +32,6 @@ public class StockDataService {
 	@Value("${stock.api.key}")
 	private String apiKey;
 
-	////////////테스트용
-	public void checkMapperFiles() throws Exception {
-		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		Resource[] resources = resolver.getResources("classpath:/mapper/**/*.xml");
-		
-		System.out.println("FOUND MAPPER FILES:");
-		for(Resource resource : resources)  {
-			System.out.println(resource.getFilename());
-		}
-	}
-	////////////테스트용
-	
 	public void fetchAndSaveStockData() {
 		
 		//현재 시간
@@ -56,45 +45,93 @@ public class StockDataService {
 		String url = API_URL + apiKey;
 		
 		try {
-			/*
 			RestTemplate restTemplate = new RestTemplate();
-			String response = restTemplate.getForObject(url, String.class);
+			//String response = restTemplate.getForObject(url, String.class);
+			
+			//임시
+			String response = "{ \"Meta Data\": { \"1. Information\": \"Intraday (5min) open, high, low, close prices and volume\", \"2. Symbol\": \"IBM\", \"3. Last Refreshed\": \"2025-03-05 19:55:00\", \"4. Interval\": \"5min\", \"5. Output Size\": \"Compact\", \"6. Time Zone\": \"US/Eastern\" }, \"Time Series (5min)\": { \"2025-03-05 19:55:00\": { \"1. open\": \"250.7200\", \"2. high\": \"250.7200\", \"3. low\": \"250.7200\", \"4. close\": \"250.7200\", \"5. volume\": \"41\" }, \"2025-03-05 19:50:00\": { \"1. open\": \"250.6000\", \"2. high\": \"250.6000\", \"3. low\": \"250.6000\", \"4. close\": \"250.6000\", \"5. volume\": \"10\" } } }";
 			
 			//ObjectMapper 생성
 			ObjectMapper objectMapper = new ObjectMapper();
 			
 			//JSON 문자열을 JsonNode 객체로 변환
-			JsonNode jsonNode = objectMapper.readTree(response);
+			JsonNode rootNode = objectMapper.readTree(response);
 			
 			//임시
-			String data = jsonNode.toString();
+			/*
+			String data = rootNode.toString();
+			System.out.println("===================TEMP===================");
 			System.out.println(data);
+			System.out.println("===================TEMP===================");
 			*/
 			
-			/*
-			//객체 생성
-			JsonNode meta_data = jsonNode.get("Meta Data");
-			String information 		= meta_data.get("1. Information").asText();
-			String symbol 			= meta_data.get("2. Symbol").asText();
-			String lastRefreshed 	= meta_data.get("3. Last Refreshed").asText();
-			String timeFrame 		= meta_data.get("4. Interval").asText();
-			String outputSize 		= meta_data.get("5. Output Size").asText();
-			String timeZone 		= meta_data.get("6. Time Zone").asText();
+			//Meta Data 유무 확인
+			boolean hasMetaData = rootNode.has("Meta Data");
 			
-			MetaData metaData = new MetaData(information, symbol, lastRefreshed, timeFrame, outputSize, timeZone);
-			*/
+			if(hasMetaData) {
+				//데이터를 저장할 Map(Meta Data)
+				Map<String, String> metaDataMap = new HashMap<>();
+				
+				//객체 생성(Meta Data)
+				JsonNode metaDataNode = rootNode.get("Meta Data");
+				
+				if(metaDataNode != null && metaDataNode.isObject()) {
+					Iterator<String> metaKeys = metaDataNode.fieldNames();
+					
+					while(metaKeys.hasNext()) {
+						String key = metaKeys.next();
+						String value = metaDataNode.get(key).asText();
+						
+						metaDataMap.put(key, value);
+					}
+				}
+				System.out.println(metaDataMap);
+				//DB에 저장
+				//stockDataMapper.insertMetaData(metaData);
+			}
 			
-			/*
-			System.out.println("information : " + information);
-			System.out.println("symbol : " + symbol);
-			System.out.println("lastRefreshed : " + lastRefreshed);
-			System.out.println("timeFrame : " + timeFrame);
-			System.out.println("outputSize : " + outputSize);
-			System.out.println("timeZone : " + timeZone);
-			*/
+			//Time Series (~) Key 찾기
+			String timeSeriesKey = null;
+			for(Iterator<String> it = rootNode.fieldNames(); it.hasNext(); ) {
+				String key = it.next();
+				if(key.startsWith("Time Series")) {
+					timeSeriesKey = key;
+					break;
+				}
+			}
 			
-			//DB에 저장
-			//stockDataMapper.insertMetaData(metaData);
+			//Time Series 유무 확인
+			if(timeSeriesKey != null) {
+				//데이터를 저장할 Map(Time Series)
+				Map<String,Map<String, String>> timeSeriesMap = new HashMap<>();
+				
+				//객체 생성(Time Series)
+				JsonNode timeSeriesNode = rootNode.get(timeSeriesKey);
+				
+				if(timeSeriesNode != null && timeSeriesNode.isObject()) {
+					Iterator<String> timeKeys = timeSeriesNode.fieldNames();
+					
+					while(timeKeys.hasNext()) {
+						String timeKey = timeKeys.next();
+						JsonNode timeDataNode = timeSeriesNode.get(timeKey);
+						
+						Map<String, String> dataMap = new HashMap<>();
+						Iterator<String> dataKeys = timeDataNode.fieldNames();
+						
+						while(dataKeys.hasNext()) {
+							String dataKey = dataKeys.next();
+							String dataValue = timeDataNode.get(dataKey).asText();
+							
+							dataMap.put(dataKey, dataValue);
+						}
+						
+						timeSeriesMap.put(timeKey, dataMap);
+					}
+				}
+				System.out.println(timeSeriesMap);
+				//DB에 저장
+				//stockDataMapper.insertMetaData(metaData);
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();

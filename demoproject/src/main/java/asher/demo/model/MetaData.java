@@ -11,11 +11,11 @@ public class MetaData {
 	private String timeZone;		//시간대
 	
 	//생성자
-	public MetaData(String information, String symbol, String last_refreshed, String interval, String output_size, String time_zone) {
+	public MetaData(String information, String symbol, String last_refreshed, String time_frame, String output_size, String time_zone) {
 		this.information = information;
 		this.symbol = symbol;
 		this.lastRefreshed = last_refreshed;
-		this.timeFrame = interval;
+		this.timeFrame = time_frame;
 		this.outputSize = output_size;
 		this.timeZone = time_zone;
 	}
@@ -38,11 +38,11 @@ public class MetaData {
 	public void setLast_refreshed(String last_refreshed) {
 		this.lastRefreshed = last_refreshed;
 	}
-	public String getInterval() {
+	public String getTimeFrame() {
 		return timeFrame;
 	}
-	public void setInterval(String interval) {
-		this.timeFrame = interval;
+	public void setTimeFrame(String timeFrame) {
+		this.timeFrame = timeFrame;
 	}
 	public String getOutput_size() {
 		return outputSize;
@@ -56,5 +56,4 @@ public class MetaData {
 	public void setTime_zone(String time_zone) {
 		this.timeZone = time_zone;
 	}
-	
 }
