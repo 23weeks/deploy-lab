@@ -9,22 +9,27 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import asher.demo.mapper.LogMapper;
 import asher.demo.mapper.StockDataMapper;
-import asher.demo.model.MetaData;
+import asher.demo.model.Constant;
+import asher.demo.model.LogVO;
 
 @Service
 public class StockDataService {
 		
 	private final StockDataMapper stockDataMapper;
+	private final LogMapper logMapper;
 	
 	@Autowired
-	public StockDataService(StockDataMapper stockDataMapper) {
+	public StockDataService(StockDataMapper stockDataMapper, LogMapper logMapper) {
 		this.stockDataMapper = stockDataMapper;
+		this.logMapper = logMapper;
 	}
 
 	private static final String API_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=AAPL&interval=5min&apikey=";
@@ -32,6 +37,7 @@ public class StockDataService {
 	@Value("${stock.api.key}")
 	private String apiKey;
 
+	@Transactional
 	public void fetchAndSaveStockData() {
 		
 		//현재 시간
@@ -43,6 +49,8 @@ public class StockDataService {
 		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		
 		String url = API_URL + apiKey;
+		
+		LogVO logVO = new LogVO();
 		
 		try {
 			RestTemplate restTemplate = new RestTemplate();
@@ -134,7 +142,8 @@ public class StockDataService {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logVO.setLogVO(Constant.API_REQUEST_FAIL, e.getMessage().toString());
+			logMapper.insertErrorLog(logVO);
 		}
 	}
 }

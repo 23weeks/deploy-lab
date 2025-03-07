@@ -3,7 +3,7 @@
 <mapper namespace="asher.demo.mapper.StockDataMapper">
 	
 	<!-- INSERT Alpha Vantage API - Meta Data -->
-	<insert id="insertMetaData" parameterType="MetaData">
+	<insert id="insertMetaData" parameterType="MetaDataVO">
 		INSERT INTO META_DATA_TB (
 									SYMBOL
 								  , INFORMATION

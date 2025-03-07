@@ -1,6 +1,6 @@
 package asher.demo.model;
 
-public class StockData {
+public class StockDataVO {
 	
 	//Time Series Data
 	private String stockTime;		//시간
@@ -12,7 +12,7 @@ public class StockData {
 	private String volume;			//거래량
 	
 	//생성자
-	public StockData(String stockTime, String symbol, String open, String high, String low, String close, String volume) {
+	public StockDataVO(String stockTime, String symbol, String open, String high, String low, String close, String volume) {
 		this.stockTime = stockTime;
 		this.symbol = symbol;
 		this.open = open;

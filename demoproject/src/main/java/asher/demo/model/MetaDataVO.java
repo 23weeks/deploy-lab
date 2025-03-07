@@ -1,6 +1,6 @@
 package asher.demo.model;
 
-public class MetaData {
+public class MetaDataVO {
 	
 	//Meta Data
 	private String information;		//정보
@@ -11,7 +11,7 @@ public class MetaData {
 	private String timeZone;		//시간대
 	
 	//생성자
-	public MetaData(String information, String symbol, String last_refreshed, String time_frame, String output_size, String time_zone) {
+	public MetaDataVO(String information, String symbol, String last_refreshed, String time_frame, String output_size, String time_zone) {
 		this.information = information;
 		this.symbol = symbol;
 		this.lastRefreshed = last_refreshed;
