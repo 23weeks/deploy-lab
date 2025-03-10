@@ -20,6 +20,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import asher.demo.mapper.StockDataMapper;
 import asher.demo.model.Constant;
 import asher.demo.model.LogVO;
+import asher.demo.model.MetaDataVO;
+import asher.demo.model.StockDataVO;
 
 @Service
 public class StockDataService {
@@ -53,6 +55,9 @@ public class StockDataService {
 		
 		LogVO logVO = new LogVO();
 		
+		//SEQ 가져오기(PK로 사용)
+		String SEQ = stockDataMapper.selectSeq();
+		
 		try {
 			RestTemplate restTemplate = new RestTemplate();
 			String response = restTemplate.getForObject(url, String.class);
@@ -69,14 +74,16 @@ public class StockDataService {
 			//Meta Data 유무 확인
 			boolean hasMetaData = rootNode.has("Meta Data");
 			
-			//Symbol 초기화
-			String Symbol = null;
+			//DTO용 VO 생성
+			MetaDataVO metaDataVO = new MetaDataVO();
+			StockDataVO stockDataVO = new StockDataVO();
 			
 			if(hasMetaData) {
 				//데이터를 저장할 Map(Meta Data)
 				Map<String, String> metaDataMap = new HashMap<>();
-				//현재 시간 입력
-				metaDataMap.put("REG_DATE", formattedTime);
+				
+				//VO에 API 호출시간 담기
+				metaDataVO.setReg_date(formattedTime);
 				
 				//객체 생성(Meta Data)
 				JsonNode metaDataNode = rootNode.get("Meta Data");
@@ -93,11 +100,22 @@ public class StockDataService {
 					}
 				}
 				
-				//symbol 저장(timeSeries에 사용)
-				Symbol = metaDataMap.get("Symbol");
+				//VO에 담기
+				metaDataVO.setMetaDataVO(
+										SEQ,
+										metaDataMap.get("Information"), 
+										metaDataMap.get("Symbol"), 
+										metaDataMap.get("Last Refreshed"), 
+										metaDataMap.get("Interval"), 
+										metaDataMap.get("Output Size"),
+										metaDataMap.get("Time Zone"));
+				
+				//SEQ, Symbol 저장(Stock Data - Time Series)
+				stockDataVO.setSeq(SEQ);
+				stockDataVO.setSymbol(metaDataMap.get("Symbol"));
 				
 				//DB에 저장
-				stockDataMapper.insertMetaData(metaDataMap);
+				stockDataMapper.insertMetaData(metaDataVO);
 				
 			}
 			
@@ -134,21 +152,29 @@ public class StockDataService {
 							dataMap.put(replaceDataKey, dataValue);
 						}
 						
-						dataMap.put("STOCK_TIME", timeKey);
-						dataMap.put("Symbol", Symbol);
-						stockDataMapper.insertStockData(dataMap);
+						//VO에 담기
+						stockDataVO.setStockDataVO(
+												timeKey, 
+												dataMap.get("open"), 
+												dataMap.get("high"), 
+												dataMap.get("low"), 
+												dataMap.get("close"), 
+												dataMap.get("volume"));
+						
+						//DB에 저장
+						stockDataMapper.insertStockData(stockDataVO);
 					}
 				}
 			}
 			
 			//성공 로그 등록
-			logVO.setLogVO(Constant.SUCCESS, "", formattedTime);
+			logVO.setLogVO(SEQ, Constant.SUCCESS, "", formattedTime);
 			
 		} catch (Exception e) {
 			//콘솔 확인용
 			e.printStackTrace();
 			//DB 저장용
-			logVO.setLogVO(Constant.API_REQUEST_ERROR, e.getMessage(), formattedTime);
+			logVO.setLogVO(SEQ, Constant.API_REQUEST_ERROR, e.getMessage(), formattedTime);
 			
 		} finally {
 			//INSERT LOG

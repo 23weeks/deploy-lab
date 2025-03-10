@@ -2,10 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="asher.demo.mapper.StockDataMapper">
 	
+	<!-- SELECT Meta Data Sequence -->
+	<select id="selectSeq" resultType="String">
+		SELECT LPAD(META_DATA_SEQ.NEXTVAL, 10, 0) AS SEQ FROM DUAL
+	</select>
+	
 	<!-- INSERT Alpha Vantage API - Meta Data -->
-	<insert id="insertMetaData" parameterType="map">
+	<insert id="insertMetaData" parameterType="MetaDataVO">
 		INSERT INTO META_DATA_TB (
-									SYMBOL
+									SEQ
+								  , SYMBOL
 								  , INFORMATION
 								  , LAST_REFRESHED
 								  , TIME_FRAME
@@ -13,20 +19,22 @@
 								  , TIME_ZONE
 								  , REG_DATE
 								) VALUES (
-									#{Symbol}
-								  , #{Information}
-								  , TO_DATE(#{Last Refreshed}, 'YYYY-MM-DD HH24:MI:SS')
-								  , #{Interval}
-								  , #{Output Size}
-								  , #{Time Zone}
-								  , TO_DATE(#{REG_DATE}, 'YYYY-MM-DD HH24:MI:SS')
+									#{seq}
+								  , #{symbol}
+								  , #{information}
+								  , TO_DATE(#{last_refreshed}, 'YYYY-MM-DD HH24:MI:SS')
+								  , #{time_frame}
+								  , #{output_size}
+								  , #{time_zone}
+								  , TO_DATE(#{reg_date}, 'YYYY-MM-DD HH24:MI:SS')
 								)
 	</insert>
 	
 	<!-- INSERT Alpha Vantage API - Time Series -->
-	<insert id="insertStockData" parameterType="map">
+	<insert id="insertStockData" parameterType="StockDataVO">
 		INSERT INTO STOCK_DATA_TB (
-									STOCK_TIME
+									SEQ
+								  , STOCK_TIME
 								  , SYMBOL
 								  , OPEN_PRICE
 								  , HIGH_PRICE
@@ -34,8 +42,9 @@
 								  , CLOSE_PRICE
 								  , VOLUME
 								) VALUES(
-									#{STOCK_TIME}
-								  , #{Symbol}
+									#{seq}
+								  , #{stock_time}
+								  , #{symbol}
 								  , #{open}
 								  , #{high}
 								  , #{low}

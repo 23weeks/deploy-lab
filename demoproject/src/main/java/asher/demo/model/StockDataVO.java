@@ -3,7 +3,8 @@ package asher.demo.model;
 public class StockDataVO {
 	
 	//Time Series Data
-	private String stockTime;		//시간
+	private String seq;				//시퀀스
+	private String stock_time;		//시간
 	private String symbol;			//종목
 	private String open;			//시가
 	private String high;			//고가
@@ -11,22 +12,26 @@ public class StockDataVO {
 	private String close;			//종가
 	private String volume;			//거래량
 	
-	//생성자
-	public StockDataVO(String stockTime, String symbol, String open, String high, String low, String close, String volume) {
-		this.stockTime = stockTime;
-		this.symbol = symbol;
+	public void setStockDataVO(String stock_time, String open, String high, String low, String close, String volume) {
+		this.stock_time = stock_time;
 		this.open = open;
 		this.high = high;
 		this.low = low;
 		this.close = close;
 		this.volume = volume;
 	}
-	
-	public String getStockTime() {
-		return stockTime;
+
+	public String getSeq() {
+		return seq;
 	}
-	public void setStockTime(String stockTime) {
-		this.stockTime = stockTime;
+	public void setSeq(String seq) {
+		this.seq = seq;
+	}
+	public String getStock_time() {
+		return stock_time;
+	}
+	public void setStock_time(String stock_time) {
+		this.stock_time = stock_time;
 	}
 	public String getSymbol() {
 		return symbol;

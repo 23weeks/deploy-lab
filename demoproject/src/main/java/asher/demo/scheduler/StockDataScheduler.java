@@ -19,8 +19,8 @@ public class StockDataScheduler {
 	/* 5분 주기로 주식 데이터 저장 
 	 * 1일 최대 25회 제한으로 1시간 주기로 변경
 	 * */
-	@Scheduled(cron = "0 0 * * * *")
-	//@Scheduled(fixedRate = 300000)
+	//@Scheduled(cron = "0 0 * * * *")
+	@Scheduled(fixedRate = 300000)
 	public void fetchStockData() {
 		stockDataService.fetchAndSaveStockData();
 	}

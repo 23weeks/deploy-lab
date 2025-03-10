@@ -5,13 +5,15 @@
 	<!-- INSERT Log -->
 	<insert id="insertLog" parameterType="LogVO">
 		INSERT INTO LOG_TB (
-							CODE_ID
-						  , REG_DATE
+							SEQ
+						  , CODE_ID
 						  , LOG_CONTENT
+						  , REG_DATE
 						  ) VALUES (
-						  	#{codeId}
-						  , TO_DATE(#{regDate}, 'YYYY-MM-DD HH24:MI:SS')
-						  , #{logContent}
+						  	#{seq}
+						  , #{code_id}
+						  , #{log_content}
+						  , TO_DATE(#{reg_date}, 'YYYY-MM-DD HH24:MI:SS')
 						  )
 	</insert>
 </mapper>

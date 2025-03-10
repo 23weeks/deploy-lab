@@ -1,15 +1,19 @@
 package asher.demo.mapper;
 
-import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
+
+import asher.demo.model.MetaDataVO;
+import asher.demo.model.StockDataVO;
 
 @Mapper
 public interface StockDataMapper {
 	
+	/* SELECT Meta Data Serial Number */
+	String selectSeq();
+	
 	/* INSERT Alpha Vantage API - Meta Data */
-	void insertMetaData(Map<String, String> metaData);
+	void insertMetaData(MetaDataVO metaDataVO);
 	
 	/* INSERT Alpha Vantage API - Time Series */
-	void insertStockData(Map<String, String> stockData);
+	void insertStockData(StockDataVO stockDataVO);
 }
