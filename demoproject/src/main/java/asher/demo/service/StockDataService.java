@@ -1,11 +1,12 @@
-package asher.demo.scheduler;
+package asher.demo.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,11 +17,9 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import asher.demo.mapper.LogMapper;
 import asher.demo.mapper.StockDataMapper;
 import asher.demo.model.Constant;
 import asher.demo.model.LogVO;
-import asher.demo.service.LogService;
 
 @Service
 public class StockDataService {
@@ -56,10 +55,10 @@ public class StockDataService {
 		
 		try {
 			RestTemplate restTemplate = new RestTemplate();
-			//String response = restTemplate.getForObject(url, String.class);
+			String response = restTemplate.getForObject(url, String.class);
 			
 			//임시
-			String response = "{ \"Meta Data\": { \"1. Information\": \"Intraday (5min) open, high, low, close prices and volume\", \"2. Symbol\": \"IBM\", \"3. Last Refreshed\": \"2025-03-05 19:55:00\", \"4. Interval\": \"5min\", \"5. Output Size\": \"Compact\", \"6. Time Zone\": \"US/Eastern\" }, \"Time Series (5min)\": { \"2025-03-05 19:55:00\": { \"1. open\": \"250.7200\", \"2. high\": \"250.7200\", \"3. low\": \"250.7200\", \"4. close\": \"250.7200\", \"5. volume\": \"41\" }, \"2025-03-05 19:50:00\": { \"1. open\": \"250.6000\", \"2. high\": \"250.6000\", \"3. low\": \"250.6000\", \"4. close\": \"250.6000\", \"5. volume\": \"10\" } } }";
+			//String response = "{ \"Meta Data\": { \"1. Information\": \"Intraday (5min) open, high, low, close prices and volume\", \"2. Symbol\": \"IBM\", \"3. Last Refreshed\": \"2025-03-05 19:55:00\", \"4. Interval\": \"5min\", \"5. Output Size\": \"Compact\", \"6. Time Zone\": \"US/Eastern\" }, \"Time Series (5min)\": { \"2025-03-05 19:55:00\": { \"1. open\": \"250.7200\", \"2. high\": \"250.7200\", \"3. low\": \"250.7200\", \"4. close\": \"250.7200\", \"5. volume\": \"41\" }, \"2025-03-05 19:50:00\": { \"1. open\": \"250.6000\", \"2. high\": \"250.6000\", \"3. low\": \"250.6000\", \"4. close\": \"250.6000\", \"5. volume\": \"10\" } } }";
 			
 			//ObjectMapper 생성
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -70,9 +69,14 @@ public class StockDataService {
 			//Meta Data 유무 확인
 			boolean hasMetaData = rootNode.has("Meta Data");
 			
+			//Symbol 초기화
+			String Symbol = null;
+			
 			if(hasMetaData) {
 				//데이터를 저장할 Map(Meta Data)
 				Map<String, String> metaDataMap = new HashMap<>();
+				//현재 시간 입력
+				metaDataMap.put("REG_DATE", formattedTime);
 				
 				//객체 생성(Meta Data)
 				JsonNode metaDataNode = rootNode.get("Meta Data");
@@ -89,9 +93,12 @@ public class StockDataService {
 					}
 				}
 				
-				System.out.println(metaDataMap);
+				//symbol 저장(timeSeries에 사용)
+				Symbol = metaDataMap.get("Symbol");
+				
 				//DB에 저장
-				//stockDataMapper.insertMetaData(metaData);
+				stockDataMapper.insertMetaData(metaDataMap);
+				
 			}
 			
 			//Time Series (~) Key 찾기
@@ -106,6 +113,8 @@ public class StockDataService {
 			
 			//Time Series 유무 확인
 			if(timeSeriesKey != null) {
+				//데이터를 저장할 List<Map>
+				List<Map<String, String>> timeSeriesList = new ArrayList<>();
 				//데이터를 저장할 Map(Time Series)
 				Map<String,Map<String, String>> timeSeriesMap = new HashMap<>();
 				
@@ -130,19 +139,20 @@ public class StockDataService {
 							dataMap.put(replaceDataKey, dataValue);
 						}
 						
-						timeSeriesMap.put(timeKey, dataMap);
+						dataMap.put("STOCK_TIME", timeKey);
+						dataMap.put("Symbol", Symbol);
+						stockDataMapper.insertStockData(dataMap);
 					}
 				}
-
-				System.out.println(timeSeriesMap);
-				//DB에 저장
-				//stockDataMapper.insertMetaData(metaData);
 			}
 			
 			//성공 로그 등록
 			logVO.setLogVO(Constant.SUCCESS, "", formattedTime);
 			
 		} catch (Exception e) {
+			//콘솔 확인용
+			e.printStackTrace();
+			//DB 저장용
 			logVO.setLogVO(Constant.API_REQUEST_ERROR, e.getMessage(), formattedTime);
 			
 		} finally {

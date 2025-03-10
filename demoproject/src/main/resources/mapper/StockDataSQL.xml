@@ -3,7 +3,7 @@
 <mapper namespace="asher.demo.mapper.StockDataMapper">
 	
 	<!-- INSERT Alpha Vantage API - Meta Data -->
-	<insert id="insertMetaData" parameterType="MetaDataVO">
+	<insert id="insertMetaData" parameterType="map">
 		INSERT INTO META_DATA_TB (
 									SYMBOL
 								  , INFORMATION
@@ -13,13 +13,34 @@
 								  , TIME_ZONE
 								  , REG_DATE
 								) VALUES (
-									#{symbol}
-								  , #{information}
-								  , TO_DATE(#{lastRefreshed}, 'YYYY-MM-DD HH24:MI:SS')
-								  , #{timeFrame}
-								  , #{outputSize}
-								  , #{timeZone}
-								  , SYSDATE
+									#{Symbol}
+								  , #{Information}
+								  , TO_DATE(#{Last Refreshed}, 'YYYY-MM-DD HH24:MI:SS')
+								  , #{Interval}
+								  , #{Output Size}
+								  , #{Time Zone}
+								  , TO_DATE(#{REG_DATE}, 'YYYY-MM-DD HH24:MI:SS')
+								)
+	</insert>
+	
+	<!-- INSERT Alpha Vantage API - Time Series -->
+	<insert id="insertStockData" parameterType="map">
+		INSERT INTO STOCK_DATA_TB (
+									STOCK_TIME
+								  , SYMBOL
+								  , OPEN_PRICE
+								  , HIGH_PRICE
+								  , LOW_PRICE
+								  , CLOSE_PRICE
+								  , VOLUME
+								) VALUES(
+									#{STOCK_TIME}
+								  , #{Symbol}
+								  , #{open}
+								  , #{high}
+								  , #{low}
+								  , #{close}
+								  , #{volume}
 								)
 	</insert>
 </mapper>
