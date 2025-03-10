@@ -2,10 +2,8 @@ package asher.demo.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +41,9 @@ public class StockDataService {
 	@Transactional
 	public void fetchAndSaveStockData() {
 		
+		//SEQ 가져오기(PK로 사용)
+		String SEQ = stockDataMapper.selectSeq();
+				
 		//현재 시간
 		LocalDateTime now = LocalDateTime.now();
 		String formattedTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -55,15 +56,9 @@ public class StockDataService {
 		
 		LogVO logVO = new LogVO();
 		
-		//SEQ 가져오기(PK로 사용)
-		String SEQ = stockDataMapper.selectSeq();
-		
 		try {
 			RestTemplate restTemplate = new RestTemplate();
 			String response = restTemplate.getForObject(url, String.class);
-			
-			//테스트용 데이터
-			//String response = "{ \"Meta Data\": { \"1. Information\": \"Intraday (5min) open, high, low, close prices and volume\", \"2. Symbol\": \"IBM\", \"3. Last Refreshed\": \"2025-03-05 19:55:00\", \"4. Interval\": \"5min\", \"5. Output Size\": \"Compact\", \"6. Time Zone\": \"US/Eastern\" }, \"Time Series (5min)\": { \"2025-03-05 19:55:00\": { \"1. open\": \"250.7200\", \"2. high\": \"250.7200\", \"3. low\": \"250.7200\", \"4. close\": \"250.7200\", \"5. volume\": \"41\" }, \"2025-03-05 19:50:00\": { \"1. open\": \"250.6000\", \"2. high\": \"250.6000\", \"3. low\": \"250.6000\", \"4. close\": \"250.6000\", \"5. volume\": \"10\" } } }";
 			
 			//ObjectMapper 생성
 			ObjectMapper objectMapper = new ObjectMapper();
