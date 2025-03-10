@@ -42,7 +42,7 @@ public class StockDataService {
 		
 		//현재 시간
 		LocalDateTime now = LocalDateTime.now();
-		String formattedTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:SS"));
+		String formattedTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 		
 		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		System.out.println("API REQUEST TIME : " + formattedTime);
@@ -65,14 +65,6 @@ public class StockDataService {
 			//JSON 문자열을 JsonNode 객체로 변환
 			JsonNode rootNode = objectMapper.readTree(response);
 			
-			//임시
-			/*
-			String data = rootNode.toString();
-			System.out.println("===================TEMP===================");
-			System.out.println(data);
-			System.out.println("===================TEMP===================");
-			*/
-			
 			//Meta Data 유무 확인
 			boolean hasMetaData = rootNode.has("Meta Data");
 			
@@ -93,7 +85,7 @@ public class StockDataService {
 						metaDataMap.put(key, value);
 					}
 				}
-				System.out.println(metaDataMap);
+				
 				//DB에 저장
 				//stockDataMapper.insertMetaData(metaData);
 			}
@@ -126,9 +118,15 @@ public class StockDataService {
 						Map<String, String> dataMap = new HashMap<>();
 						Iterator<String> dataKeys = timeDataNode.fieldNames();
 						
+						//임시
+						System.out.println(timeKey);
+						
 						while(dataKeys.hasNext()) {
 							String dataKey = dataKeys.next();
 							String dataValue = timeDataNode.get(dataKey).asText();
+							
+							//임시
+							System.out.println("\t" + dataKey.replaceAll("^\\d+\\.\\s+", "") + " : " + dataValue);	//앞에 붙은 "숫자. " 제거
 							
 							dataMap.put(dataKey, dataValue);
 						}
@@ -136,7 +134,7 @@ public class StockDataService {
 						timeSeriesMap.put(timeKey, dataMap);
 					}
 				}
-				System.out.println(timeSeriesMap);
+
 				//DB에 저장
 				//stockDataMapper.insertMetaData(metaData);
 			}
