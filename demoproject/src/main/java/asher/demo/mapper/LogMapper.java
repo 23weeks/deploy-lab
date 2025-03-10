@@ -4,6 +4,6 @@ import asher.demo.model.LogVO;
 
 public interface LogMapper {
 
-	/* INSERT Error Log */
-	void insertErrorLog(LogVO vo);
+	/* INSERT Log */
+	void insertLog(LogVO vo);
 }

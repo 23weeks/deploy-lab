@@ -9,17 +9,17 @@ import asher.demo.mapper.LogMapper;
 import asher.demo.model.LogVO;
 
 @Service
-public class ErrorService {
+public class LogService {
 	
 	private final LogMapper logMapper;
 	
 	@Autowired
-	public ErrorService(LogMapper logMapper) {
+	public LogService(LogMapper logMapper) {
 		this.logMapper = logMapper;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)	//Service단에서 @Transactional 선언, 실패 시 독립적인 transaction 처리
-	public void logError(LogVO vo) {
-		logMapper.insertErrorLog(vo);
+	public void insertLog(LogVO vo) {
+		logMapper.insertLog(vo);
 	}
 }

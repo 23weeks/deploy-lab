@@ -2,11 +2,15 @@ package asher.demo.model;
 
 public class Constant {
 
-	//COMMON ERROR
-	public static final String ERROR = "9000";
-	//API REQUEST FAIL
-	public static final String API_REQUEST_FAIL = "9001";
-	//API RESPONSE DATA ERROR
-	public static final String API_RESPONSE_DATA_ERROR = "9002";
+//SUCCESS
+	public static final String SUCCESS = "200";
+	
+//ERROR
+	//통상 에러
+	public static final String ERROR = "500";
+	//API 호출 에러
+	public static final String API_REQUEST_ERROR = "901";
+	//API 응답 데이터 에러
+	public static final String API_RESPONSE_DATA_ERROR = "902";
 	
 }

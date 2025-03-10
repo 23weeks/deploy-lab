@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,17 +20,18 @@ import asher.demo.mapper.LogMapper;
 import asher.demo.mapper.StockDataMapper;
 import asher.demo.model.Constant;
 import asher.demo.model.LogVO;
+import asher.demo.service.LogService;
 
 @Service
 public class StockDataService {
 		
 	private final StockDataMapper stockDataMapper;
-	private final LogMapper logMapper;
+	private final LogService logService;
 	
 	@Autowired
-	public StockDataService(StockDataMapper stockDataMapper, LogMapper logMapper) {
+	public StockDataService(StockDataMapper stockDataMapper, LogService logService) {
 		this.stockDataMapper = stockDataMapper;
-		this.logMapper = logMapper;
+		this.logService = logService;
 	}
 
 	private static final String API_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=AAPL&interval=5min&apikey=";
@@ -82,10 +84,12 @@ public class StockDataService {
 						String key = metaKeys.next();
 						String value = metaDataNode.get(key).asText();
 						
-						metaDataMap.put(key, value);
+						String replaceKey = key.replaceAll("^\\d+\\.\\s+", "");
+						metaDataMap.put(replaceKey, value);
 					}
 				}
 				
+				System.out.println(metaDataMap);
 				//DB에 저장
 				//stockDataMapper.insertMetaData(metaData);
 			}
@@ -118,30 +122,32 @@ public class StockDataService {
 						Map<String, String> dataMap = new HashMap<>();
 						Iterator<String> dataKeys = timeDataNode.fieldNames();
 						
-						//임시
-						System.out.println(timeKey);
-						
 						while(dataKeys.hasNext()) {
 							String dataKey = dataKeys.next();
 							String dataValue = timeDataNode.get(dataKey).asText();
 							
-							//임시
-							System.out.println("\t" + dataKey.replaceAll("^\\d+\\.\\s+", "") + " : " + dataValue);	//앞에 붙은 "숫자. " 제거
-							
-							dataMap.put(dataKey, dataValue);
+							String replaceDataKey = dataKey.replaceAll("^\\d+\\.\\s+", "");	//앞에 붙은 "숫자. " 제거
+							dataMap.put(replaceDataKey, dataValue);
 						}
 						
 						timeSeriesMap.put(timeKey, dataMap);
 					}
 				}
 
+				System.out.println(timeSeriesMap);
 				//DB에 저장
 				//stockDataMapper.insertMetaData(metaData);
 			}
 			
+			//성공 로그 등록
+			logVO.setLogVO(Constant.SUCCESS, "", formattedTime);
+			
 		} catch (Exception e) {
-			logVO.setLogVO(Constant.API_REQUEST_FAIL, e.getMessage().toString());
-			logMapper.insertErrorLog(logVO);
+			logVO.setLogVO(Constant.API_REQUEST_ERROR, e.getMessage(), formattedTime);
+			
+		} finally {
+			//INSERT LOG
+			logService.insertLog(logVO);
 		}
 	}
 }

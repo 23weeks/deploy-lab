@@ -2,15 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="asher.demo.mapper.LogMapper">
 	
-	<!-- INSERT Error Log -->
-	<insert id="insertErrorLog" parameterType="LogVO">
+	<!-- INSERT Log -->
+	<insert id="insertLog" parameterType="LogVO">
 		INSERT INTO LOG_TB (
 							CODE_ID
 						  , REG_DATE
 						  , LOG_CONTENT
 						  ) VALUES (
 						  	#{codeId}
-						  , SYSDATE
+						  , TO_DATE(#{regDate}, 'YYYY-MM-DD HH24:MI:SS')
 						  , #{logContent}
 						  )
 	</insert>
