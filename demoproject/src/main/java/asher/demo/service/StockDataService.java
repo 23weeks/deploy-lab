@@ -57,7 +57,7 @@ public class StockDataService {
 			RestTemplate restTemplate = new RestTemplate();
 			String response = restTemplate.getForObject(url, String.class);
 			
-			//임시
+			//테스트용 데이터
 			//String response = "{ \"Meta Data\": { \"1. Information\": \"Intraday (5min) open, high, low, close prices and volume\", \"2. Symbol\": \"IBM\", \"3. Last Refreshed\": \"2025-03-05 19:55:00\", \"4. Interval\": \"5min\", \"5. Output Size\": \"Compact\", \"6. Time Zone\": \"US/Eastern\" }, \"Time Series (5min)\": { \"2025-03-05 19:55:00\": { \"1. open\": \"250.7200\", \"2. high\": \"250.7200\", \"3. low\": \"250.7200\", \"4. close\": \"250.7200\", \"5. volume\": \"41\" }, \"2025-03-05 19:50:00\": { \"1. open\": \"250.6000\", \"2. high\": \"250.6000\", \"3. low\": \"250.6000\", \"4. close\": \"250.6000\", \"5. volume\": \"10\" } } }";
 			
 			//ObjectMapper 생성
@@ -113,11 +113,6 @@ public class StockDataService {
 			
 			//Time Series 유무 확인
 			if(timeSeriesKey != null) {
-				//데이터를 저장할 List<Map>
-				List<Map<String, String>> timeSeriesList = new ArrayList<>();
-				//데이터를 저장할 Map(Time Series)
-				Map<String,Map<String, String>> timeSeriesMap = new HashMap<>();
-				
 				//객체 생성(Time Series)
 				JsonNode timeSeriesNode = rootNode.get(timeSeriesKey);
 				
