@@ -162,13 +162,14 @@ public class StockDataService {
 				}
 			}
 			
-			//성공 로그 등록
+			//로그 등록
 			logVO.setLogVO(SEQ, Constant.SUCCESS, "", formattedTime);
 			
 		} catch (Exception e) {
 			//콘솔 확인용
 			e.printStackTrace();
-			//DB 저장용
+			
+			//로그 등록
 			logVO.setLogVO(SEQ, Constant.API_REQUEST_ERROR, e.getMessage(), formattedTime);
 			
 		} finally {
