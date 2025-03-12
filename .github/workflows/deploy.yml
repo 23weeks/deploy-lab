@@ -30,15 +30,19 @@ jobs:
               echo "project directory checked."
               
               # 프로젝트 폴더 이동
+              echo "change Directory..."
               cd /home/${{ secrets.SSH_USER }}/app/demo
 
               # 기존 실행 중인 프로세스 종료
+              echo "proccess stopp..."
               sudo systemctl stop myapp || true
 
               # 최신 소스 가져오기
+              echo "git pull..."
               #git pull origin main
 
               # git pull 로그 기록
+              echo "create git pull log..."
               echo "Git Pull Log: " > /home/${{ secrets.SSH_USER }}/app/git_pull_log.txt
               git log -n 1 >> /home/${{ secrets.SSH_USER }}/app/git_pull_log.txt
               
