@@ -36,24 +36,47 @@ jobs:
               echo "🛑 기존 프로세스 종료..."
               sudo systemctl stop myapp || true
 
+              # 실행 중인 프로세스 확인 후 강제 종료 (선택 사항)
+              PID=$(pgrep -f 'demoproject.jar')
+              if [ ! -z "$PID" ]; then
+                echo "🔪 기존 애플리케이션 종료 중 (PID: $PID)..."
+                sudo kill -9 $PID
+              fi
+
               # 최신 소스 가져오기
               echo "🚀 최신 소스 가져오는 중..."
-              git pull origin main > /home/${{ secrets.SSH_USER }}/app/git_pull_log.txt 2>&1
+              git pull origin main > /home/${{ secrets.SSH_USER }}/app/git_pull_log.txt 2>&1 || { echo "❌ Git Pull 실패!"; exit 1; }
 
               # git pull 로그 기록
               echo "📜 Git Pull 로그 기록:"
               cat /home/${{ secrets.SSH_USER }}/app/git_pull_log.txt
 
               # 폴더 이동
+              echo "📂 프로젝트 폴더 이동..."
               cd demoproject
 
               # 빌드 (Maven 사용)
-              echo "Maven 빌드 중...:"
-              ./mvnw clean package -DskipTests
+              echo "⚙️ Maven 빌드 중..."
+              chmod +x mvnw
+              ./mvnw clean package -DskipTests -DfinalName=demoproject || { echo "❌ Maven 빌드 실패!"; exit 1; }
+
+              # 기존 JAR 백업
+              echo "🔄 기존 JAR 백업 중..."
+              sudo mv /home/${{ secrets.SSH_USER }}/app/demo/demoproject.jar /home/${{ secrets.SSH_USER }}/app/demo/demoproject.jar.bak || true
+
+              # 새로운 JAR 배포
+              echo "📦 빌드 완료, 실행 파일 이동 중..."
+              sudo mv target/demoproject.jar /home/${{ secrets.SSH_USER }}/app/demo/demoproject.jar
 
               # JAR 실행
-              echo "JAR 실행 중..."
+              echo "🚀 JAR 실행 중..."
               sudo systemctl start myapp
+
+              # 서비스 로그 확인
+              echo "📜 서비스 로그 확인 중..."
+              sudo journalctl -u myapp --no-pager --lines=50
+
+              echo "🎉 배포 완료!"
               
             else
               echo "❌ 프로젝트 디렉토리를 찾을 수 없습니다!"
