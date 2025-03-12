@@ -36,8 +36,11 @@ jobs:
             # git pull 로그 기록
             echo "Git Pull Log:" > ~/app/git_pull_log.txt
             git log -n 1 >> ~/app/git_pull_log.txt
+
+            # 폴더 이동
+            cd demoproject
             
-            # 빌드 (Maven 사용 예시)
+            # 빌드 (Maven 사용)
             ./mvnw clean package -DskipTests
 
             # git pull 로그 출력
