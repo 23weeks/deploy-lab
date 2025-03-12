@@ -26,11 +26,11 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             
             # 디렉토리가 있는지 확인
-            if [ -d "/home/asher/app/demo" ]; then
+            if [ -d "/home/${{ secrets.SSH_USER }}/app/demo" ]; then
               echo "project directory checked."
               
               # 프로젝트 폴더 이동
-              cd /home/asher/app/demo
+              cd /home/${{ secrets.SSH_USER }}/app/demo
               pwd
             else
               echo "project directory not found!"
