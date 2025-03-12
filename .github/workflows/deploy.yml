@@ -24,12 +24,7 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            # 디렉토리가 있는지 확인
-            if [ -d "/home/${{ secrets.SSH_USER }}/app/demo" ]; then
-              # 프로젝트 폴더 이동
-              cd /home/${{ secrets.SSH_USER }}/app/demo
-            else
-              echo "project directory not found!"
-              exit 1
-            fi
+            whoami
+            ls -ld /hmoe/asher/app/demo
+            pwd
           EOF
