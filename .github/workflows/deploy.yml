@@ -43,6 +43,17 @@ jobs:
               # git pull 로그 기록
               echo "📜 Git Pull 로그 기록:"
               cat /home/${{ secrets.SSH_USER }}/app/git_pull_log.txt
+
+              # 폴더 이동
+              cd demoproject
+
+              # 빌드 (Maven 사용)
+              echo "Maven 빌드 중...:"
+              ./mvnw clean package -DskipTests
+
+              # JAR 실행
+              echo "JAR 실행 중..."
+              sudo systemctl start myapp
               
             else
               echo "❌ 프로젝트 디렉토리를 찾을 수 없습니다!"
