@@ -25,6 +25,6 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             # 프로젝트 폴더 이동
-            cd ~/app/demo
+            cd /home/${{ secrets.SSH_USER }}/app/demo
 
           EOF
