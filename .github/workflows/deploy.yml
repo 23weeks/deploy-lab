@@ -31,7 +31,13 @@ jobs:
               
               # 프로젝트 폴더 이동
               cd /home/${{ secrets.SSH_USER }}/app/demo
-              pwd
+
+              # 기존 실행 중인 프로세스 종료
+              sudo systemctl stop myapp || true
+
+              # 최신 소스 가져오기
+              #git pull origin main
+              
             else
               echo "project directory not found!"
               exit 1
