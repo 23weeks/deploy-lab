@@ -72,9 +72,9 @@ jobs:
               echo "🚀 JAR 실행 중..."
               sudo systemctl start myapp
 
-              # 서비스 로그 확인
-              echo "📜 서비스 로그 확인 중..."
-              sudo journalctl -u myapp --no-pager --lines=10
+              # myapp 서비스 상태 확인
+              echo "📊 myapp 서비스 상태:"
+              sudo systemctl status myapp --no-pager
 
               echo "🎉 배포 완료!"
               
