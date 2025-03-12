@@ -25,29 +25,27 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             
-            # 디렉토리가 있는지 확인
+            # 디렉토리 확인
             if [ -d "/home/${{ secrets.SSH_USER }}/app/demo" ]; then
-              echo "project directory checked."
-              
-              # 프로젝트 폴더 이동
-              echo "change Directory..."
-              cd /home/${{ secrets.SSH_USER }}/app/demo
+              echo "✅ 프로젝트 디렉토리 확인됨."
 
+              # 프로젝트 폴더 이동
+              cd /home/${{ secrets.SSH_USER }}/app/demo
+              
               # 기존 실행 중인 프로세스 종료
-              echo "proccess stopp..."
+              echo "🛑 기존 프로세스 종료..."
               sudo systemctl stop myapp || true
 
               # 최신 소스 가져오기
-              echo "git pull..."
-              #git pull origin main
+              echo "🚀 최신 소스 가져오는 중..."
+              git pull origin main > /home/${{ secrets.SSH_USER }}/app/git_pull_log.txt 2>&1
 
               # git pull 로그 기록
-              echo "create git pull log..."
-              echo "Git Pull Log: " > /home/${{ secrets.SSH_USER }}/app/git_pull_log.txt
-              git log -n 1 >> /home/${{ secrets.SSH_USER }}/app/git_pull_log.txt
+              echo "📜 Git Pull 로그 기록:"
+              cat /home/${{ secrets.SSH_USER }}/app/git_pull_log.txt
               
             else
-              echo "project directory not found!"
+              echo "❌ 프로젝트 디렉토리를 찾을 수 없습니다!"
               exit 1
             fi
           EOF
