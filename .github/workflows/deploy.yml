@@ -25,7 +25,7 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             # 프로젝트 폴더 이동
-            cd /home/${{ secrets.SSH_USER }}/app/demo
+            cd ~/app/demo
 
             # 기존 실행 중인 프로세스 종료
             sudo systemctl stop myapp || true
@@ -34,8 +34,8 @@ jobs:
             git pull origin main
 
             # git pull 로그 기록
-            echo "Git Pull Log:" > /home/${{ secrets.SSH_USER }}/app/git_pull_log.txt
-            git log -n 1 >> /home/${{ secrets.SSH_USER }}/app/git_pull_log.txt
+            echo "Git Pull Log:" > ~/app/git_pull_log.txt
+            git log -n 1 >> ~/app/git_pull_log.txt
 
             # 폴더 이동
             cd demoproject
