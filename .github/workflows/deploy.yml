@@ -58,15 +58,15 @@ jobs:
               # 빌드 (Maven 사용)
               echo "⚙️ Maven 빌드 중..."
               chmod +x mvnw
-              ./mvnw clean package -DskipTests -DfinalName=demoproject || { echo "❌ Maven 빌드 실패!"; exit 1; }
+              ./mvnw clean package -DskipTests || { echo "❌ Maven 빌드 실패!"; exit 1; }
 
               # 기존 JAR 백업
               echo "🔄 기존 JAR 백업 중..."
-              sudo mv /home/${{ secrets.SSH_USER }}/app/demo/demoproject.jar /home/${{ secrets.SSH_USER }}/app/demo/demoproject.jar.bak || true
+              sudo mv /home/${{ secrets.SSH_USER }}/app/demo/demoproject-0.1.jar /home/${{ secrets.SSH_USER }}/app/demo/demoproject-0.1.jar.bak || true
 
               # 새로운 JAR 배포
               echo "📦 빌드 완료, 실행 파일 이동 중..."
-              sudo mv target/demoproject.jar /home/${{ secrets.SSH_USER }}/app/demo/demoproject.jar
+              sudo mv target/demoproject-0.1.jar /home/${{ secrets.SSH_USER }}/app/demo/demoproject-0.1.jar
 
               # JAR 실행
               echo "🚀 JAR 실행 중..."
@@ -74,7 +74,7 @@ jobs:
 
               # 서비스 로그 확인
               echo "📜 서비스 로그 확인 중..."
-              sudo journalctl -u myapp --no-pager --lines=50
+              sudo journalctl -u myapp --no-pager --lines=5
 
               echo "🎉 배포 완료!"
               
