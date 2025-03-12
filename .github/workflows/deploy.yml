@@ -36,7 +36,7 @@ jobs:
               echo "🛑 기존 프로세스 종료..."
               sudo systemctl stop myapp || true
 
-              # 실행 중인 프로세스 확인 후 강제 종료 (선택 사항)
+              # 실행 중인 프로세스 확인 후 강제 종료
               PID=$(pgrep -f 'demoproject.jar')
               if [ ! -z "$PID" ]; then
                 echo "🔪 기존 애플리케이션 종료 중 (PID: $PID)..."
@@ -74,7 +74,7 @@ jobs:
 
               # 서비스 로그 확인
               echo "📜 서비스 로그 확인 중..."
-              sudo journalctl -u myapp --no-pager --lines=5
+              sudo journalctl -u myapp --no-pager --lines=10
 
               echo "🎉 배포 완료!"
               
