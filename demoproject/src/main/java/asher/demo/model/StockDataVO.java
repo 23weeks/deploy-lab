@@ -21,6 +21,15 @@ public class StockDataVO {
 		this.volume = volume;
 	}
 
+	public void setStockDataVO(String seq, String stock_time, String symbol, String open, String high, String low, String close, String volume) {
+		this.stock_time = stock_time;
+		this.open = open;
+		this.high = high;
+		this.low = low;
+		this.close = close;
+		this.volume = volume;
+	}
+	
 	public String getSeq() {
 		return seq;
 	}
