@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import asher.demo.model.StockDataVO;
 
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
+@CrossOrigin(origins = {"http://localhost:3000", "https://d1edx29o6lkwr1.cloudfront.net"}, allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
 public class StockDataController {
@@ -18,6 +18,7 @@ public class StockDataController {
 	@GetMapping("/stocks")
 	public ResponseEntity<List<StockDataVO>> getStockData() {
 		StockDataVO stockDataVO = new StockDataVO();
+		//더미 데이터 생성
 		stockDataVO.setStockDataVO(
 									"9999999999", 
 									"2025-12-31 12:10:00.000", 
