@@ -52,4 +52,21 @@
 								  , #{volume}
 								)
 	</insert>
+	
+	<!-- SELECT Stock Data List -->
+	<select id="selectStockData" parameterType="StockDataVO">
+		SELECT
+			   SEQ
+			 , TO_CHAR(STOCK_TIME, 'YYYY-MM-DD HH24:MI:SS') AS STOCK_TIME
+			 , OPEN_PRICE AS OPEN
+			 , HIGH_PRICE AS HIGH
+			 , LOW_PRICE AS LOW
+			 , CLOSE_PRICE AS CLOSE
+			 , VOLUME
+		  FROM STOCK_DATA_TB
+		 WHERE SEQ = (SELECT MAX(SEQ) FROM STOCK_DATA_TB)
+		 <![CDATA[
+		   AND ROWNUM <= #{rownum}
+		 ]]>
+	</select>
 </mapper>

@@ -52,13 +52,13 @@ public class StockDataController {
 		
 		//객체 생성
 		StockDataVO stockDataVO = new StockDataVO();
-		//데이터를 담을 list
-		List<StockDataVO> list = new ArrayList<StockDataVO>();
-		//parameter -> 객체로 담기
-		stockDataVO.setSymbol(param.get("symbol"));
 		
-		//주식 데이터 조회
-		list = stockDataService.selectStockData(stockDataVO);
+		//symbol, rownum
+		stockDataVO.setSymbol(param.get("symbol"));
+		stockDataVO.setRownum(param.get("rownum"));
+
+		//데이터를 담을 list
+		List<StockDataVO> list = stockDataService.selectStockData(stockDataVO);
 		
 		return ResponseEntity.ok(list);
 	}

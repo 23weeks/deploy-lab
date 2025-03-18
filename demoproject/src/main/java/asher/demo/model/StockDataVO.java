@@ -12,6 +12,8 @@ public class StockDataVO {
 	private String close;			//종가
 	private String volume;			//거래량
 	
+	private String rownum;			//rownum
+	
 	public void setStockDataVO(String stock_time, String open, String high, String low, String close, String volume) {
 		this.stock_time = stock_time;
 		this.open = open;
@@ -77,5 +79,11 @@ public class StockDataVO {
 	}
 	public void setVolume(String volume) {
 		this.volume = volume;
+	}
+	public String getRownum() {
+		return rownum;
+	}
+	public void setRownum(String rownum) {
+		this.rownum = rownum;
 	}
 }
