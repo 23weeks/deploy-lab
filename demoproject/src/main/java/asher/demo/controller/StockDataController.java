@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,7 +47,7 @@ public class StockDataController {
 		return ResponseEntity.ok(List.of(stockDataVO));
 	}
 	
-	@GetMapping("/local/stocks")
+	@PostMapping("/local/stocks")
 	public ResponseEntity<List<StockDataVO>> getLocalStockData(@RequestParam Map<String, String> param) {
 		
 		//객체 생성
