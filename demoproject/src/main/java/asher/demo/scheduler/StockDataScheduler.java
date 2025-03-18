@@ -4,15 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import asher.demo.service.StockDataService;
-
 @Component
 public class StockDataScheduler {
 	
-	private final StockDataService stockDataService;
+	private final StockDataSchedulerService stockDataService;
 	
 	@Autowired
-	public StockDataScheduler(StockDataService stockDataService) {
+	public StockDataScheduler(StockDataSchedulerService stockDataService) {
 		this.stockDataService = stockDataService;
 	}
 	
