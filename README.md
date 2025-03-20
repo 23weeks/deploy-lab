@@ -1,20 +1,19 @@
-### 백엔드 데모 프로젝트
+# 백엔드 데모 프로젝트
 
-### 프로젝트 주제 :
-    - 주식 데이터(Alpha Vantage API)를 통해 수집한 데이터를 집적 및 조회하는 서버 구축
+주식 데이터를 시각화하는 대시보드입니다.
 
-### 프로젝트 목표 :
+## 프로젝트 목표
     - 실시간 데이터 시각화 대시보드 구현
-    - 백엔드 자동 배포(CI/CD) : GitHub Actions + EC2
+    - 다양한 차트(Line Chart, Candlestick Chart, Bar Chart) 제공
+    - AWS S3 + CloudFront를 통한 배포
 
-### 프론트엔드
-    - front-react / react + typescript
-    - UI Styling : Styled_components
-    - Package Manager : npm
-    - Deployment : AWS S3 + CloudFront
+## 기술 스택
+    - 프론트엔드 : React + TypeScript
+    - 라이브러리 : Recharts
+    - UI : Styled-Components
+    - 빌드 툴 : npm
+    - 배포 : AWS S3 + CloudFront
 
-### 프레임워크
-    - Spring-Boot
-
-### 데이터베이스
-    - Oracle
+### 추가 설명
+    - API 연동 방식(RESTful API)
+    - CI/CD 방식(Github Actions)
