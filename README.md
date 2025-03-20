@@ -6,8 +6,6 @@
     데이터베이스 연동 : MyBatis (xml로 구현)    
 
 ### 프론트엔드
-    - <a>url : https://d1edx29o6lkwr1.cloudfront.net/</a>
-    
     - front-react / react + typescript
     - UI Styling : Styled_components
     - Package Manager : npm
