@@ -2,7 +2,6 @@ package asher.demo.service.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import asher.demo.mapper.StockDataMapper;
@@ -15,7 +14,6 @@ public class StockDataServiceImpl implements StockDataService {
 
 	private final StockDataMapper stockDataMapper;
 	
-	@Autowired
 	public StockDataServiceImpl(StockDataMapper stockDataMapper) {
 		this.stockDataMapper = stockDataMapper;
 	}

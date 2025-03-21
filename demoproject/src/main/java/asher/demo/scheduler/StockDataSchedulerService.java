@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,6 @@ public class StockDataSchedulerService {
 	private final StockDataService stockDataService;
 	private final LogService logService;
 	
-	@Autowired
 	public StockDataSchedulerService(StockDataService stockDataService, LogService logService) {
 		this.stockDataService = stockDataService;
 		this.logService = logService;

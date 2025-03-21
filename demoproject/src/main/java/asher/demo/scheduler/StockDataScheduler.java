@@ -1,6 +1,5 @@
 package asher.demo.scheduler;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +8,6 @@ public class StockDataScheduler {
 	
 	private final StockDataSchedulerService stockDataService;
 	
-	@Autowired
 	public StockDataScheduler(StockDataSchedulerService stockDataService) {
 		this.stockDataService = stockDataService;
 	}

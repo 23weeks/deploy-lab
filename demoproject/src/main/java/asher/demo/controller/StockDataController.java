@@ -1,10 +1,10 @@
 package asher.demo.controller;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +23,6 @@ public class StockDataController {
 	
 	private final StockDataService stockDataService;
 	
-	@Autowired
 	public StockDataController(StockDataService stockDataService) {
 		this.stockDataService = stockDataService;
 	}
@@ -49,6 +48,12 @@ public class StockDataController {
 	
 	@PostMapping("/local/stocks")
 	public ResponseEntity<List<StockDataVO>> getLocalStockData(@RequestBody Map<String, String> param) {
+		
+		//현재 시간
+		LocalDateTime now = LocalDateTime.now();
+		String formattedTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		
+		System.out.println("REQUEST TIME : " + formattedTime + "\n");
 		
 		//객체 생성
 		StockDataVO stockDataVO = new StockDataVO();
