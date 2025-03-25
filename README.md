@@ -25,3 +25,4 @@ Spring Boot 기반으로 개발되었으며, AWS EC2와 GitHub Actions를 활용
 ## AWS EC2 환경
     - OS : Ubuntu 22.04
     - 웹 서버 : Nginx
+    - Database : Oracle
