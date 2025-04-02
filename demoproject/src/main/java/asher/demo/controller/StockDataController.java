@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import asher.demo.model.StockDataVO;
@@ -51,8 +52,8 @@ public class StockDataController {
 		return ResponseEntity.ok(List.of(stockDataVO));
 	}
 	
-	@GetMapping("/{id}")
-	public ResponseEntity<List<StockDataVO>> getLocalStockData(@PathVariable String id, @RequestBody Map<String, String> param) {
+	@GetMapping("/local")
+	public ResponseEntity<List<StockDataVO>> getLocalStockData(@RequestParam String symbol, @RequestParam String rownum) {
 		
 		//현재 시간
 		LocalDateTime now = LocalDateTime.now();
@@ -64,8 +65,8 @@ public class StockDataController {
 		StockDataVO stockDataVO = new StockDataVO();
 		
 		//symbol, rownum
-		stockDataVO.setSymbol(param.get("symbol"));
-		stockDataVO.setRownum(param.get("rownum"));
+		stockDataVO.setSymbol(symbol);
+		stockDataVO.setRownum(rownum);
 
 		//데이터를 담을 list
 		List<StockDataVO> list = stockDataService.selectStockData(stockDataVO);
